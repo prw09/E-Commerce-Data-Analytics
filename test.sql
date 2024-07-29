@@ -360,7 +360,15 @@ ORDER BY NumberOfItems DESC;
  
 
 
--- WINDOW FUNCTIONS QUESTIONS ......
+#########                                   
+/*
+
+===========================
+WINDOW FUNCTIONS QUESTIONS ....
+===========================
+ */
+#########
+
 
 ### Question 1: Calculate the running total of `TotalAmount` for each order placed by each customer.
 
@@ -449,10 +457,17 @@ SELECT
 FROM Orders;
 
  
-#########                                   Log Maintenace .......                                             ######### 
+#########                                   
+/*
 
-###                       Automate SQL Server Logging with Triggers  
- 
+===========================
+LOG MAINTENANCE
+===========================
+ */
+######### 
+
+-- Automate SQL Server Logging with Triggers  
+  
  
 -- create a log table ....
 
@@ -661,6 +676,14 @@ DELETE FROM Customers WHERE CustomerID = 6;
 
 
 
+#########                                   
+/*
+
+===========================
+Implementing Indexes
+===========================
+ */
+######### 
 
 
 
