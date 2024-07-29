@@ -461,7 +461,7 @@ FROM Orders;
 /*
 
 ===========================
-LOG MAINTENANCE
+ 🛠️ LOG MAINTENANCE 
 ===========================
  */
 ######### 
@@ -680,7 +680,7 @@ DELETE FROM Customers WHERE CustomerID = 6;
 /*
 
 ===========================
-Implementing Indexes
+Implementing Indexing 📊
 ===========================
  */
 ######### 
