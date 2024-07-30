@@ -702,17 +702,32 @@ Implementing Indexing 📊
 
 
 
+#########                                   
+
+/*
+
+===========================
+Implementing Views 📊
+===========================
+ 
+*/
+
+#########
 
 
+-- View for Product Details: A view combining product details with category names.
+CREATE VIEW vw_ProductDetails AS
+SELECT ProductID ,  ProductName , Price , Stock , CategoryName 
+FROM Products P 
+INNER JOIN Categories C
+ON P.CategoryID = C.CategoryID;
+
+SELECT * FROM vw_ProductDetails;
 
 
+-- View for Customer Orders : A view to get a summary of orders placed by each customer.
 
-
-
-
-
-
-
+SELECT C.CustomerID , C.FirstName , C.LastName , COUNT(OI.OrderID) AS T
 
 
 
