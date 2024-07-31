@@ -203,23 +203,34 @@ WHERE RN = 1;
 
 -- Query 6: List all products that are out of stock, i.e. stock = 0
 
-SELECT ProductID , ProductName , Stock  from products 
-where Stock = 0;
+SELECT 
+    ProductID, ProductName, Stock
+FROM
+    products
+WHERE
+    Stock = 0;
 
 -- with category name
-SELECT p.ProductID, p.ProductName, c.CategoryName, p.Stock 
-FROM Products p JOIN Categories c
-ON p.CategoryID = c.CategoryID
-WHERE Stock = 0;
+SELECT 
+    p.ProductID, p.ProductName, c.CategoryName, p.Stock
+FROM
+    Products p
+        JOIN
+    Categories c ON p.CategoryID = c.CategoryID
+WHERE
+    Stock = 0;
 
 
 -- Query 7: Find customers who placed orders in the last 30 days
 
-SELECT C.CustomerID , C.FirstName , C.LastName , C.Phone , C.Email 
-FROM Customers C
-JOIN Orders O 
-ON C.CustomerID = O.CustomerID
-WHERE O.OrderDate >= DATE_SUB(NOW(), INTERVAL 30 DAY);
+SELECT 
+    C.CustomerID, C.FirstName, C.LastName, C.Phone, C.Email
+FROM
+    Customers C
+        JOIN
+    Orders O ON C.CustomerID = O.CustomerID
+WHERE
+    O.OrderDate >= DATE_SUB(NOW(), INTERVAL 30 DAY);
 
 
 -- Query 8: Calculate the total number of orders placed each month
@@ -234,19 +245,31 @@ ORDER BY OrderYear , OrderMonth ;
 
 -- Query 9: Retrieve the details of the most recent order
 
-SELECT O.OrderID , C.FirstName , C.LastName , O.OrderDate , O.TotalAmount  
-FROM Orders O 
-JOIN Customers C 
-ON O.CustomerID = C.CustomerID
-ORDER BY O.OrderDate DESC LIMIT 1 ;
+SELECT 
+    O.OrderID,
+    C.FirstName,
+    C.LastName,
+    O.OrderDate,
+    O.TotalAmount
+FROM
+    Orders O
+        JOIN
+    Customers C ON O.CustomerID = C.CustomerID
+ORDER BY O.OrderDate DESC
+LIMIT 1;
 
 
 --  10: Find the average price of products in each category
 
-SELECT c.CategoryID, c.CategoryName, round(AVG(p.Price), 2) as AveragePrice 
-FROM Categories c JOIN Products p
-ON c.CategoryID = p.ProductID
-GROUP BY c.CategoryID, c.CategoryName;
+SELECT 
+    c.CategoryID,
+    c.CategoryName,
+    ROUND(AVG(p.Price), 2) AS AveragePrice
+FROM
+    Categories c
+        JOIN
+    Products p ON c.CategoryID = p.ProductID
+GROUP BY c.CategoryID , c.CategoryName;
 
 
 -- Query 11: List customers who have never placed an order
@@ -257,20 +280,32 @@ GROUP BY c.CategoryID, c.CategoryName;
 -- ON O.CustomerID = O.CustomerID
 -- WHERE O.OrderID = 0
 
-SELECT c.CustomerID, c.FirstName, c.LastName, c.Email, c.Phone, O.OrderID, o.TotalAmount
-FROM Customers c LEFT OUTER JOIN Orders o
-ON c.CustomerID = o.CustomerID
-WHERE o.OrderId IS NULL;
+SELECT 
+    c.CustomerID,
+    c.FirstName,
+    c.LastName,
+    c.Email,
+    c.Phone,
+    O.OrderID,
+    o.TotalAmount
+FROM
+    Customers c
+        LEFT OUTER JOIN
+    Orders o ON c.CustomerID = o.CustomerID
+WHERE
+    o.OrderId IS NULL;
 
 
 -- Query 12: Retrieve the total quantity sold for each product
 
 
-SELECT P.ProductID , P.ProductName , SUM(O.Quantity) 
-From Products P 
-JOIN Orderitems O
-ON P.ProductID = O.ProductID
-GROUP BY P.ProductID , P.ProductName 
+SELECT 
+    P.ProductID, P.ProductName, SUM(O.Quantity)
+FROM
+    Products P
+        JOIN
+    Orderitems O ON P.ProductID = O.ProductID
+GROUP BY P.ProductID , P.ProductName
 ORDER BY P.ProductID;
 
 -- If we use indeing here so we can optimize it futher ...
@@ -281,50 +316,84 @@ ORDER BY P.ProductID;
 
 -- Query 13: Calculate the total revenue generated from each category
 
-SELECT c.CategoryID, c.CategoryName, SUM(oi.Quantity * oi.Price) AS TotalRevenue
-FROM OrderItems oi
-JOIN Products p ON oi.ProductID = p.ProductID
-JOIN Categories c ON c.CategoryID = p.CategoryID
-GROUP BY c.CategoryID, c.CategoryName
-ORDER BY TotalRevenue DESC;
+CREATE VIEW vw_Category_TotalRevenue AS
+    SELECT 
+        c.CategoryID,
+        c.CategoryName,
+        SUM(oi.Quantity * oi.Price) AS TotalRevenue
+    FROM
+        OrderItems oi
+            JOIN
+        Products p ON oi.ProductID = p.ProductID
+            JOIN
+        Categories c ON c.CategoryID = p.CategoryID
+    GROUP BY c.CategoryID , c.CategoryName
+    ORDER BY TotalRevenue DESC;
 
 
 
 -- Query 14: Find the highest-priced product in each category
 
-SELECT c.CategoryID, c.CategoryName, p1.ProductID, p1.ProductName, p1.Price
-FROM Categories c
-JOIN Products p1 ON c.CategoryID = p1.CategoryID
-WHERE p1.Price = (SELECT MAX(Price) FROM Products p2 WHERE p2.CategoryID = p1.CategoryID)
+SELECT 
+    c.CategoryID,
+    c.CategoryName,
+    p1.ProductID,
+    p1.ProductName,
+    p1.Price
+FROM
+    Categories c
+        JOIN
+    Products p1 ON c.CategoryID = p1.CategoryID
+WHERE
+    p1.Price = (SELECT 
+            MAX(Price)
+        FROM
+            Products p2
+        WHERE
+            p2.CategoryID = p1.CategoryID)
 ORDER BY p1.Price DESC;
  
  
 
 -- Query 15: Retrieve orders with a total amount greater than a specific value (e.g., $500)
   
-SELECT o.OrderID, c.CustomerID, c.FirstName, c.LastName, o.TotalAmount
-FROM Orders o
-JOIN Customers c ON o.CustomerID = c.CustomerID
-WHERE o.TotalAmount >= 500
+SELECT 
+    o.OrderID,
+    c.CustomerID,
+    c.FirstName,
+    c.LastName,
+    o.TotalAmount
+FROM
+    Orders o
+        JOIN
+    Customers c ON o.CustomerID = c.CustomerID
+WHERE
+    o.TotalAmount >= 500
 ORDER BY o.TotalAmount DESC;
  
  
  
 -- Query 16: List products along with the number of orders they appear in
 
-SELECT p.ProductID, p.ProductName, COUNT(oi.OrderID) as OrderCount
-FROM Products p
-JOIN OrderItems oi ON p.ProductID = oi.ProductID
-GROUP BY p.ProductID, p.ProductName
+SELECT 
+    p.ProductID, p.ProductName, COUNT(oi.OrderID) AS OrderCount
+FROM
+    Products p
+        JOIN
+    OrderItems oi ON p.ProductID = oi.ProductID
+GROUP BY p.ProductID , p.ProductName
 ORDER BY OrderCount DESC;
   
  
 -- Query 17: Find the top 3 most frequently ordered products
   
-SELECT p.ProductID, p.ProductName, COUNT(oi.OrderID) AS OrderCount
-FROM OrderItems oi
-JOIN Products p ON oi.ProductID = p.ProductID
-GROUP BY p.ProductID, p.ProductName
+SELECT 
+    p.ProductID, p.ProductName, COUNT(oi.OrderID) AS OrderCount
+FROM
+    OrderItems oi
+        JOIN
+    Products p ON oi.ProductID = p.ProductID
+GROUP BY p.ProductID , p.ProductName
 ORDER BY OrderCount DESC
 LIMIT 3;
  
@@ -332,31 +401,46 @@ LIMIT 3;
  
 -- Query 18: Calculate the total number of customers from each country
  
-SELECT Country, COUNT(CustomerID) AS TotalCustomers
-FROM Customers
+SELECT 
+    Country, COUNT(CustomerID) AS TotalCustomers
+FROM
+    Customers
 GROUP BY Country
 ORDER BY TotalCustomers DESC;
  
  
 -- Query 19: Retrieve the list of customers along with their total spending
   
-SELECT c.CustomerID, c.FirstName, c.LastName, SUM(o.TotalAmount) AS TotalSpending
-FROM Customers c
-JOIN Orders o ON c.CustomerID = o.CustomerID
-GROUP BY c.CustomerID, c.FirstName, c.LastName;
+SELECT 
+    c.CustomerID,
+    c.FirstName,
+    c.LastName,
+    SUM(o.TotalAmount) AS TotalSpending
+FROM
+    Customers c
+        JOIN
+    Orders o ON c.CustomerID = o.CustomerID
+GROUP BY c.CustomerID , c.FirstName , c.LastName;
  
  
 -- Query 20: List orders with more than a specified number of items (e.g., 5 items)
  
  
-SELECT o.OrderID, c.CustomerID, c.FirstName, c.LastName, COUNT(oi.OrderItemID) AS NumberOfItems
-FROM Orders o
-JOIN OrderItems oi ON o.OrderID = oi.OrderID
-JOIN Customers c ON o.CustomerID = c.CustomerID
-GROUP BY o.OrderID, c.CustomerID, c.FirstName, c.LastName
+SELECT 
+    o.OrderID,
+    c.CustomerID,
+    c.FirstName,
+    c.LastName,
+    COUNT(oi.OrderItemID) AS NumberOfItems
+FROM
+    Orders o
+        JOIN
+    OrderItems oi ON o.OrderID = oi.OrderID
+        JOIN
+    Customers c ON o.CustomerID = c.CustomerID
+GROUP BY o.OrderID , c.CustomerID , c.FirstName , c.LastName
 HAVING COUNT(oi.OrderItemID) >= 5
 ORDER BY NumberOfItems DESC;
- 
  
 
 
