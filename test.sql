@@ -750,6 +750,30 @@ INNER JOIN Orderitems OI ON OI.OrderID = O.OrderID
 GROUP BY O.OrderID , O.OrderDate , C.CustomerID , C.FirstName , C.LastName; 
 
 
+-- 1 . qurery to retrevie all the proucts details with their ctegoryName ?
+
+SELECT * FROM vw_productdetails;
+
+-- 2. retrieve products with a specific price range ?
+-- Using the vw_ProductDetails view to find products priced between $100 and $500
+
+SELECT * FROM vw_productdetails
+WHERE Price BETWEEN 10 AND 50;
+
+-- 3. Count the number of products in each category ? 
+-- Using the vw_ProductDetails view to count the number of products in each category.
+
+SELECT CategoryName, Count(ProductID) AS ProductCount
+FROM vw_productdetails GROUP BY CategoryName; 
+
+ 
+-- 4 . Retreive customers with more than 5 orders ?
+
+SELECT * FROM vw_customersorders;
+  
+-- 5 .  Retreive the tottal amount spent by each customers ? 
+
+SELECT * FROM vw_customersorders;
 
 
 
