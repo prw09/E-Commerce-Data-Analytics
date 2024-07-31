@@ -716,39 +716,59 @@ Implementing Views 📊
 
 
 -- View for Product Details: A view combining product details with category names.
-CREATE VIEW vw_ProductDetails AS
-SELECT ProductID ,  ProductName , Price , Stock , CategoryName 
-FROM Products P 
-INNER JOIN Categories C
-ON P.CategoryID = C.CategoryID;
 
-SELECT * FROM vw_ProductDetails;
+CREATE VIEW vw_ProductDetails AS
+    SELECT 
+        ProductID, ProductName, Price, Stock, CategoryName
+    FROM
+        Products P
+            INNER JOIN
+        Categories C ON P.CategoryID = C.CategoryID;
+
+SELECT 
+    *
+FROM
+    vw_ProductDetails;
 
 
 -- View for Customer Orders : A view to get a summary of orders placed by each customer.
 
-CREATE VIEW vw_CustomersOrders AS 
-SELECT C.CustomerID , C.FirstName , C.LastName , 
-COUNT(OI.OrderID) AS TotalOrders ,
-SUM(OI.Quantity * P.Price) AS TotalAmount 
-FROM Customers C 
-INNER JOIN Orders O ON C.CustomerID = O.CustomerID
-INNER JOIN Orderitems OI ON OI.OrderID = O.OrderID
-INNER JOIN Products P ON P.ProductID = OI.ProductID
-GROUP BY C.CustomerID , C.FirstName , C.LastName; 
+CREATE VIEW vw_CustomersOrders AS
+    SELECT 
+        C.CustomerID,
+        C.FirstName,
+        C.LastName,
+        COUNT(OI.OrderID) AS TotalOrders,
+        SUM(OI.Quantity * P.Price) AS TotalAmount
+    FROM
+        Customers C
+            INNER JOIN
+        Orders O ON C.CustomerID = O.CustomerID
+            INNER JOIN
+        Orderitems OI ON OI.OrderID = O.OrderID
+            INNER JOIN
+        Products P ON P.ProductID = OI.ProductID
+    GROUP BY C.CustomerID , C.FirstName , C.LastName; 
 
 
 -- View for Recent Orders: A view to display orders placed in the last 30 days.
 
-CREATE VIEW vw_OrdersPlaced AS 
-SELECT O.OrderID , O.OrderDate , C.CustomerID , C.FirstName , C.LastName , 
-SUM(OI.Quantity * OI.Price) AS OrderAmount 
-FROM Customers C 
-INNER JOIN Orders O ON C.CustomerID = O.CustomerID
-INNER JOIN Orderitems OI ON OI.OrderID = O.OrderID
--- INNER JOIN Products P ON P.ProductID = OI.ProductID
-GROUP BY O.OrderID , O.OrderDate , C.CustomerID , C.FirstName , C.LastName; 
-
+CREATE VIEW vw_OrdersPlaced AS
+    SELECT 
+        O.OrderID,
+        O.OrderDate,
+        C.CustomerID,
+        C.FirstName,
+        C.LastName,
+        SUM(OI.Quantity * OI.Price) AS OrderAmount
+    FROM
+        Customers C
+            INNER JOIN
+        Orders O ON C.CustomerID = O.CustomerID
+            INNER JOIN
+        Orderitems OI ON OI.OrderID = O.OrderID
+    GROUP BY O.OrderID , O.OrderDate , C.CustomerID , C.FirstName , C.LastName; 
+ 
 
 -- 1 . qurery to retrevie all the proucts details with their ctegoryName ?
 
@@ -763,22 +783,173 @@ WHERE Price BETWEEN 10 AND 50;
 -- 3. Count the number of products in each category ? 
 -- Using the vw_ProductDetails view to count the number of products in each category.
 
-SELECT CategoryName, Count(ProductID) AS ProductCount
-FROM vw_productdetails GROUP BY CategoryName; 
+SELECT 
+    CategoryName, COUNT(ProductID) AS ProductCount
+FROM
+    vw_productdetails
+GROUP BY CategoryName; 
 
  
 -- 4 . Retreive customers with more than 5 orders ?
 
-SELECT * FROM vw_customersorders;
+SELECT 
+    *
+FROM
+    vw_customersorders
+WHERE
+    TotalOrders > 1;
   
 -- 5 .  Retreive the tottal amount spent by each customers ? 
+-- Using the vw_CustomerOrders view to get the total amount spent by each customer.
 
-SELECT * FROM vw_customersorders;
+SELECT 
+    *
+FROM
+    vw_customersorders
+ORDER BY TotalAmount DESC;
+
+-- 6 . Query : Retrieve Recent Orders Above a Certain Amount
+-- Using the vw_RecentOrders view to find recent orders where the total amount is greater than $1000.
+
+SELECT 
+    *
+FROM
+    vw_ordersplaced
+WHERE
+    OrderAmount > 1000;
 
 
+-- 7 . Query : Retrieve the Latest Order for Each Customer
+-- Using the vw_RecentOrders view to find the latest order placed by each customer.
+ 
+SELECT 
+    RO.OrderID,
+    RO.OrderDate,
+    RO.CustomerID,
+    RO.FirstName,
+    RO.LastName,
+    RO.OrderAmount
+FROM
+    vw_ordersplaced RO
+        INNER JOIN
+    (SELECT 
+        CustomerID, MAX(OrderDate) AS LastestOrders
+    FROM
+        vw_ordersplaced
+    GROUP BY CustomerID) Latest ON RO.CustomerID = Latest.CustomerID
+        AND RO.OrderDate = Latest.LastestOrders
+ORDER BY RO.OrderDate DESC;
 
 
+-- 8 . Query : Retrieve Products in a Specific Category
+-- Using the vw_ProductDetails view to get all products in a specific category, such as 'Electronics'.
+
+SELECT 
+    *
+FROM
+    vw_productdetails
+WHERE
+    CategoryName = 'Electronics';
 
 
+-- 9 . Query : Retrieve Total Sales for Each Category
+
+SELECT * FROM  vw_category_totalrevenue; 
+-- vw_ordersplaced
+
+-- ALREADY MADE AN VIEW ON THIS ABOVE SO NO NEED FOR THIS QUERY ....
+
+-- SELECT 
+--     pd.CategoryName, SUM(oi.Quantity * p.Price) AS TotalSales
+-- FROM
+--     OrderItems oi
+--         INNER JOIN
+--     Products p ON oi.ProductID = p.ProductID
+--         INNER JOIN
+--     vw_productdetails pd ON p.ProductID = pd.ProductID
+-- GROUP BY pd.CategoryName
+-- ORDER BY TotalSales DESC;
 
 
+-- 10 . Query : Retrieve Customer Orders with Product Details
+-- Using the vw_CustomerOrders and vw_ProductDetails views to get customer orders along with the details 
+-- of the products ordered.
+
+-- SELECT PD.ProductID , PD.ProductName , PD.Price , C.CustomerID , C.TotalOrders 
+-- FROM vw_productdetails PD INNER JOIN 
+-- vw_customersorders C ON C.CustomerID = PD.CustomerID;
+
+
+SELECT 
+    CO.CustomerID,
+    CO.FirstName,
+    CO.LastName,
+    O.OrderID,
+    O.OrderDate,
+    PD.ProductName,
+    OI.Quantity,
+    PD.Price
+FROM
+    Orders O
+        INNER JOIN
+    OrderItems OI ON O.OrderID = OI.OrderID
+        INNER JOIN
+    vw_productdetails PD ON OI.ProductID = PD.ProductID
+        INNER JOIN
+    vw_customersorders CO ON O.CustomerID = CO.CustomerID
+ORDER BY O.OrderDate DESC;
+
+
+-- Query 41: Retrieve Top 5 Customers by Total Spending
+-- Using the vw_CustomerOrders view to find the top 5 customers based on their total spending.
+
+SELECT 
+    CustomerID, FirstName, LastName, TotalAmount
+FROM
+    vw_customersorders
+ORDER BY TotalAmount DESC
+LIMIT 5;
+
+
+-- Query 42: Retrieve Products with Low Stock
+-- Using the vw_ProductDetails view to find products with stock below a certain threshold, such as 10 units.
+
+SELECT 
+    *
+FROM
+    vw_productdetails
+WHERE
+    Stock < 50;
+
+
+-- Query 43: Retrieve Orders Placed in the Last 7 Days
+-- Using the vw_RecentOrders view to find orders placed in the last 7 days.
+
+
+SELECT 
+    *
+FROM
+    vw_ordersplaced
+WHERE
+    OrderDate >= DATE_SUB(CURDATE(), INTERVAL 7 DAY);
+
+
+-- Query 44: Retrieve Products Sold in the Last Month
+-- Using the vw_RecentOrders view to find products sold in the last month.
+
+SELECT 
+    p.ProductID, 
+    p.ProductName, 
+    SUM(oi.Quantity) AS TotalSold
+FROM 
+    vw_ordersplaced ro
+INNER JOIN 
+    OrderItems oi ON ro.OrderID = oi.OrderID
+INNER JOIN 
+    Products p ON oi.ProductID = p.ProductID
+WHERE 
+    ro.OrderDate >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
+GROUP BY 
+    p.ProductID, p.ProductName
+ORDER BY 
+    TotalSold DESC;
