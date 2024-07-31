@@ -727,8 +727,27 @@ SELECT * FROM vw_ProductDetails;
 
 -- View for Customer Orders : A view to get a summary of orders placed by each customer.
 
-SELECT C.CustomerID , C.FirstName , C.LastName , COUNT(OI.OrderID) AS T
+CREATE VIEW vw_CustomersOrders AS 
+SELECT C.CustomerID , C.FirstName , C.LastName , 
+COUNT(OI.OrderID) AS TotalOrders ,
+SUM(OI.Quantity * P.Price) AS TotalAmount 
+FROM Customers C 
+INNER JOIN Orders O ON C.CustomerID = O.CustomerID
+INNER JOIN Orderitems OI ON OI.OrderID = O.OrderID
+INNER JOIN Products P ON P.ProductID = OI.ProductID
+GROUP BY C.CustomerID , C.FirstName , C.LastName; 
 
+
+-- View for Recent Orders: A view to display orders placed in the last 30 days.
+
+CREATE VIEW vw_OrdersPlaced AS 
+SELECT O.OrderID , O.OrderDate , C.CustomerID , C.FirstName , C.LastName , 
+SUM(OI.Quantity * OI.Price) AS OrderAmount 
+FROM Customers C 
+INNER JOIN Orders O ON C.CustomerID = O.CustomerID
+INNER JOIN Orderitems OI ON OI.OrderID = O.OrderID
+-- INNER JOIN Products P ON P.ProductID = OI.ProductID
+GROUP BY O.OrderID , O.OrderDate , C.CustomerID , C.FirstName , C.LastName; 
 
 
 
