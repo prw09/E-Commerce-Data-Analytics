@@ -1,4 +1,4 @@
-# Sql-Case_Study-OnlineBussiness
+# Sql_Case_Study-OnlineBussiness
 
 ## Online Business Database
 
