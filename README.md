@@ -94,4 +94,37 @@ The project includes:
     - Practical implementations
     - Case studies and analysis
  
+### Project Description: SQL Case Study: E-Commerce Insights and Optimization
 
+This project features an **Online Business Database** that showcases my skills in key areas, including:
+
+- ![Database Design](https://img.shields.io/badge/Database%20Design-blue) **Database Design**
+- ![Management](https://img.shields.io/badge/Management-green) **Management**
+- ![Querying](https://img.shields.io/badge/Querying-orange) **Querying**
+
+The database schema is comprehensive and includes essential entities such as:
+
+- **Customers**
+- **Products**
+- **Categories**
+- **Orders**
+- **Order Items**
+
+Incorporating **sample data** reflects realistic business scenarios, demonstrating my ability to create a structured database focused on:
+
+- ![Data Organization](https://img.shields.io/badge/Data%20Organization-yellow) **Data Organization**
+- ![Data Retrieval](https://img.shields.io/badge/Data%20Retrieval-lightgrey) **Data Retrieval**
+
+Key components of the project include:
+
+- ![Normalization](https://img.shields.io/badge/Normalization-blue) **Normalization** techniques to minimize redundancy
+- ![Indexing](https://img.shields.io/badge/Indexing-purple) **Indexing** for enhanced query performance
+- ![ER Diagrams](https://img.shields.io/badge/ER%20Diagrams-red) **Entity-Relationship (ER) Diagrams** for visual representation
+- ![SQL Queries](https://img.shields.io/badge/SQL%20Queries-green) **Basic to Advanced SQL Queries** for data manipulation
+- ![Data Analysis](https://img.shields.io/badge/Data%20Analysis-orange) **Data Analysis** to derive insights
+- ![Aggregation](https://img.shields.io/badge/Aggregation-red) **Data Aggregation** for summarizing information
+- ![Triggers](https://img.shields.io/badge/Triggers-yellow) **Triggers for Record Maintenance** to ensure data integrity
+- ![ChangeLog](https://img.shields.io/badge/ChangeLog-lightgrey) **Creating a ChangeLog Table** for tracking changes
+- ![Custom Messages](https://img.shields.io/badge/Custom%20Messages-blue) **Writing Custom Messages for Trigger Execution** to enhance user experience
+
+This project effectively demonstrates my expertise in database management and optimization for e-commerce applications.
