@@ -13,3 +13,4 @@ The project includes:
 - **Sample Data**: Example records that populate the database, demonstrating realistic business scenarios.
 - **SQL Queries**: Predefined queries that retrieve and analyze data, showcasing my ability to handle common business data requirements.
 
+# Database Design and Data modelling 
