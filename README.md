@@ -1,4 +1,4 @@
-# SQL Case Study: E-Commerce Insights and Optimization
+# SQL Case Study: E-Commerce Data Optimization and Analytics
 
 ## Online Business Database
 
